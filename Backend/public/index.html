@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <h2>Login</h2>
+    <form id="loginForm" action="/login" method="POST">
+      <label for="email">Email:</label><br />
+      <input type="email" id="email" name="email" required /><br />
+      <label for="password">Password:</label><br />
+      <input
+        type="password"
+        id="password"
+        name="password"
+        required
+      /><br /><br />
+      <button type="submit">Login</button>
+    </form>
+
+    <script>
+      document
+        .getElementById('loginForm')
+        .addEventListener('submit', async function (event) {
+          event.preventDefault(); // Prevent the default form submission behavior
+
+          const formData = new FormData(this); // Get form data
+          const email = formData.get('email');
+          const password = formData.get('password');
+
+          // Send login request to the server
+          try {
+            const response = await fetch('/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+              // Redirect to home page after successful login
+              window.location.href = '/home'; // Change '/home' to your desired home page URL
+            } else {
+              alert('Login failed. Please try again.');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+          }
+        });
+    </script>
+  </body>
+</html>
