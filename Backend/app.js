@@ -11,9 +11,14 @@ const multer = require('multer');
 const upload = require('./models/multer')
 const uploadOnCloudinary = require('./models/cloudinary.js')
 const Product = require('./models/product.js')
-// app.use(upload.array('productImages', 10));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
+const Cart = require('./models/cart');
+const Purchase =require('./models/purchase');
+const Razorpay = require('razorpay');
+const razorpay = new Razorpay({
+  key_id: 'rzp_test_J0P8GmaY8N10Nh',
+  key_secret: 'zhrnh6hj24ktdmgH9KtFXKVg'
+});
+
 ;
 app.use(cookieParser());
 
@@ -63,40 +68,6 @@ const checkUp = (req, res, next) => {
 app.use(checkUp);
 
 
-// app.post('/upload-book', upload.single('productImage'), async (req, res) => {
-//   const { description, name, price, stock, category, owner } = req.body;
-
-//   // Check if product image was uploaded
-//   if (!req.file) {
-//     return res.status(400).json({ error: 'Product image is required' });
-//   }
-
-//   try {
-//     const productImageLocalPath = req.file.path;
-//     const productImage = await uploadOnCloudinary(productImageLocalPath);
-
-//     // Check if product image upload was successful
-//     if (!productImage || !productImage.url) {
-//       return res.status(500).json({ error: 'Error uploading product image' });
-//     }
-
-//     // Create a new product with the uploaded image
-//     const newProduct = await Product.create({
-//       description,
-//       name,
-//       productImage: productImage.url,
-//       price,
-//       stock,
-//       category,
-//       owner
-//     });
-
-//     res.status(201).json({ success: true, message: 'Product created successfully', product: newProduct });
-//   } catch (error) {
-//     console.error('Error uploading product image:', error);
-//     res.status(500).json({ error: 'Error uploading product image' });
-//   }
-// });
 
 app.post('/upload-book', upload.array('productImage', 10), async (req, res) => {
   const { description, name, price, stock, category, owner } = req.body;
@@ -133,6 +104,122 @@ app.post('/upload-book', upload.array('productImage', 10), async (req, res) => {
   }
 });
 
+// Define a route to get all products
+app.get('/products', async (req, res) => {
+  try {
+    // Retrieve all products from the database
+    const products = await Product.find();
+
+    // If there are no products, return an empty array
+    if (!products || products.length === 0) {
+      return res.status(404).json({ error: 'No products found' });
+    }
+
+    // If products are found, return them
+    res.status(200).json({ products });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Error fetching products' });
+  }
+});
+
+// Define a route to add a product to the user's cart
+// Define a route to add a product to the user's cart
+// Define a route to add a product to the user's cart
+app.post('/cart/add', async (req, res) => {
+  try {
+    const { userId, productId, quantity } = req.body;
+
+    // Check if the user exists
+    const user = await SignUp.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if the product exists
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Create a new cart item and add the product with the specified quantity to it
+    const cartItem = await Cart.create({
+      user: userId,
+      products: [{ productId, quantity: quantity || 1 }] // Default quantity to 1 if not provided
+    });
+
+    res.status(200).json({ success: true, message: 'Product added to cart', cartItem });
+  } catch (error) {
+    console.error('Error adding product to cart:', error);
+    res.status(500).json({ error: 'Error adding product to cart' });
+  }
+});
+
+
+// Import the Purchase schema from purchase.js
+
+
+// Create the Purchase model using the purchaseSchema
+
+
+// Route to handle buying items
+// Route to handle buying items
+app.post('/cart/buy-now', async (req, res) => {
+  try {
+    const { userId, productId, quantity } = req.body;
+
+    // Create a new purchase record
+    const purchase = await Purchase.create({
+      userId,
+      productId,
+      quantity: quantity || 1 // If quantity is not provided, default to 1
+    });
+
+    // Remove the purchased item from the cart
+    await Cart.findOneAndDelete({ userId, productId });
+
+    // Update the product stock quantity
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Check if the product stock is sufficient
+    if (product.stock < quantity) {
+      return res.status(400).json({ error: 'Insufficient stock for this quantity' });
+    }
+
+    // Update the product stock quantity and save changes
+    product.stock -= quantity;
+    await product.save();
+
+    res.status(200).json({ success: true, message: 'Item bought successfully', purchase });
+  } catch (error) {
+    console.error('Error buying item:', error);
+    res.status(500).json({ error: 'Error buying item' });
+  }
+});
+
+app.post('/create-order', async (req, res) => {
+  const amount = req.body.amount; // Amount in paise
+  const currency = 'INR';
+  const receipt = 'receipt_id_' + Math.floor(Math.random() * 1000);
+
+  try {
+    const order = await razorpay.orders.create({
+      amount: amount,
+      currency: currency,
+      receipt: receipt,
+      payment_capture: 1
+    });
+
+    res.status(200).json(order);
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.status(500).json({ error: 'Error creating order', detail: error.message });
+  }
+});
+
 
 app.get('/', (req, res) => {
   res.send('sodiowcmwd');
@@ -161,19 +248,6 @@ app.get('/verify', async (req, res) => {
   if (token) {
     console.log(token);
   }
-  // const User = await mongoose.model('Login').findOne({ email: email });
-  // console.log(User);
-  // if (User) {
-  //   const hashedPassword = User.password;
-  //   console.log(hashedPassword);
-  //   const boll = bcrypt.compareSync(password, hashedPassword);
-
-  //   if (boll) {
-  //     res.sendStatus(200);
-  //   } else {
-  //     res.sendStatus(500);
-  //   }
-  // }
   res.send(token);
 });
 
