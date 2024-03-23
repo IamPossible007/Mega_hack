@@ -1,4 +1,4 @@
-
+// Header.jsx
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { TbSearch } from "react-icons/tb";
@@ -39,22 +39,20 @@ const Header = () => {
                         <li onClick={() => navigate("/")}>Home</li>
                         <li onClick={() => navigate("/about")}>About</li>
                         <li>Categories</li>
-                        <div className="banner-cta"> <Link to="/addBook">Add Book</Link></div>
-                        <div className="banner-cta"><Link>Shop Now</Link></div>
-
+                        <li><span className="banner-cta"> <Link to="/addBook">Add Book</Link></span></li>
                     </ul>
                     <div className="center" onClick={() => navigate("/")}>
                         BOOK'sSTORE.
                     </div>
                     <div className="right">
-                        <TbSearch onClick={() => setSearchModal(true)} />
-                        <AiOutlineHeart />
+                        <TbSearch className="icon" onClick={() => setSearchModal(true)} />
+                        <AiOutlineHeart className="icon" />
                         <span
                             className="cart-icon"
                             onClick={() => setShowCart(true)}
                         >
-                            <CgShoppingCart />
-                            {!!cartCount && <span>{cartCount}</span>}
+                            <CgShoppingCart className="icon" />
+                            {!!cartCount && <span className="cart-count">{cartCount}</span>}
                         </span>
                     </div>
                 </div>

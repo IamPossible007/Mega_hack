@@ -1,92 +1,139 @@
 @import "../../css-config/mixins.scss";
 
+.banner-cta {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.banner-cta a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff6b6b;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.banner-cta a:hover {
+    background-color: #e84545;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
 .main-header {
     width: 100%;
     padding: 0 20px;
     z-index: 99;
-    background-color: #212121;
-    color: white;
-    border-bottom: 1px solid;
-    border-color: rgba(0, 0, 0, 0.1);
+    background-color: #1a1a1a;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
     @include md {
         padding: 0 40px;
     }
+
     .header-content {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 50px;
-        max-width: 1200px;
+        height: 60px;
+        max-width: 1400px;
         margin: 0 auto;
+
         @include md {
             height: 80px;
         }
     }
+
     .left {
         list-style-type: none;
         display: none;
-        gap: 25px;
+        gap: 30px;
+
         @include md {
             display: flex;
+            align-items: center;
         }
+
         li {
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 500;
             text-transform: uppercase;
             cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: opacity 0.3s ease;
+
             &:hover {
-                opacity: 0.6;
+                opacity: 0.8;
             }
         }
     }
+
     .center {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 700;
         cursor: pointer;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        letter-spacing: 1px;
+
         @include md {
-            font-size: 34px;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
+            font-size: 36px;
         }
     }
+
     .right {
         display: flex;
         align-items: center;
-        gap: 20px;
+        gap: 25px;
+
         @include md {
-            gap: 25px;
+            gap: 30px;
         }
-        svg {
-            font-size: 20px;
+
+        .icon {
+            font-size: 22px;
             cursor: pointer;
+            color: #fff;
+            transition: color 0.3s ease;
+
             @include md {
-                font-size: 24px;
+                font-size: 26px;
             }
+
             &:hover {
-                opacity: 0.6;
+                color: #ff6b6b;
             }
         }
+
         .cart-icon {
             position: relative;
-           .cart-icon span {
+
+            .cart-count {
                 min-width: 20px;
                 text-align: center;
-                background-color: #8e2de2 ;
-                color:#fff;
-                padding: 2px 5px;
+                background-color: #ff6b6b;
+                color: #fff;
+                padding: 2px 6px;
                 position: absolute;
-                top: -5px;
-                right: -12px;
+                top: -10px;
+                right: -14px;
                 font-size: 12px;
                 line-height: 1;
-                border-radius: 10px;
+                border-radius: 12px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             }
         }
     }
+
     &.sticky-header {
-        background-color: #212121;
-        color: white;
+        background-color: #1a1a1a;
+        color: #fff;
         position: sticky;
         top: 0;
         transform: translateY(-60px);

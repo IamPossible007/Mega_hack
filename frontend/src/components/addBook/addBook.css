@@ -1,13 +1,20 @@
+body {
+    background-image: linear-gradient(to right, #e68080, #f3d3d3);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .shopform {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    max-width: 400px;
+    gap: 1.5rem;
+    max-width: 500px;
     margin: 0 auto;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin-top: 100px;
+    padding: 2rem;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .textfield {
@@ -17,25 +24,38 @@
 }
 
 .labelfield {
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #333;
 }
 
 .inputfield {
-    padding: 0.5rem;
+    padding: 0.75rem 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+    background-color: #f5f5f5;
+    transition: border-color 0.3s ease;
+}
+
+.inputfield:focus {
+    outline: none;
+    border-color: #007bff;
 }
 
 .button2 {
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1.5rem;
     background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.button2:hover{
+.button2:hover {
     background-color: #0056b3;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
